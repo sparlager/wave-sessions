@@ -1,14 +1,17 @@
 name: Scrape Wave Sessions
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -16,14 +19,27 @@ jobs:
         with:
           python-version: "3.10"
 
-      - run: pip install playwright
-      - run: playwright install chromium
+      - name: Install Playwright + system deps
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
 
-      - run: python scrape.py
+      - name: Run scraper with diagnostics
+        run: |
+          python scrape.py || true
 
-      - run: |
+      - name: Upload debug artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug
+          path: |
+            *.png
+            *.log
+
+      - name: Commit sessions.json
+        run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add sessions.json
+          git add sessions.json || true
           git commit -m "Update sessions" || true
-          git push
+          git push || true
