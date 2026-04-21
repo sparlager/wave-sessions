@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "bookingUrl": "https://ticketing.thewave.com"
+  },
+  {
+    "bookingUrl": "https://corporate.vivaticket.com/"
+  }
+]
