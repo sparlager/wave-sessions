@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8" />
   <title>The Wave Sessions</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    pre { background: #f4f4f4; padding: 10px; }
+  </style>
 </head>
 <body>
   <h1>The Wave – Live Surf Sessions</h1>
   <p>Auto-updated every 5 minutes.</p>
+  <div id="output">Loading…</div>
   <script>
     fetch('sessions.json?cache=' + Date.now())
       .then(r => r.json())
-      .then(d => document.body.insertAdjacentHTML('beforeend', `<pre>${JSON.stringify(d, null, 2)}</pre>`));
+      .then(data => {
+        document.getElementById('output').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+      })
+      .catch(err => {
+        document.getElementById('output').textContent = 'Failed to load sessions.json';
+      });
   </script>
 </body>
 </html>
